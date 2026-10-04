@@ -39,8 +39,11 @@ from segmentation import (
     transform_rfm,
 )
 
-# Create output directory.
-os.makedirs("outputs", exist_ok=True)
+# Use the script's actual project folder so plots always write to the
+# same outputs directory regardless of the current working directory.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
 # ============================================================
@@ -49,12 +52,19 @@ os.makedirs("outputs", exist_ok=True)
 
 
 def save_plot(filename):
-    """Save the current matplotlib figure to the outputs folder."""
+    """Save the current matplotlib figure to the project outputs folder."""
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    target_path = os.path.join(OUTPUT_DIR, filename)
+
+    if os.path.exists(target_path):
+        os.remove(target_path)
+
     plt.tight_layout()
     plt.savefig(
-        os.path.join("outputs", filename),
+        target_path,
         dpi=300,
-        bbox_inches="tight"
+        bbox_inches="tight",
+        facecolor="white"
     )
     plt.close()
 
